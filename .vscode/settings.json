@@ -1,7 +1,24 @@
 {
-  "editor.codeActionsOnSave": {
-    "source.fixAll": "explicit",
-    "source.organizeImports": "explicit",
-    "source.sortMembers": "explicit"
-  }
+  "css.validate": false,
+  "less.validate": false,
+  "scss.validate": false,
+  "tailwindCSS.includeLanguages": {
+    "javascript": "javascript",
+    "javascriptreact": "javascriptreact",
+    "typescript": "typescript",
+    "typescriptreact": "typescriptreact"
+  },
+  "tailwindCSS.classAttributes": [
+    "class",
+    "className",
+    "ngClass"
+  ],
+  "editor.quickSuggestions": {
+    "strings": true
+  },
+  "editor.autoClosingQuotes": "always",
+  "tailwindCSS.experimental.classRegex": [
+    ["className\\s*=\\s*[\"'`]([^\"'`]*)[\"'`]", "([^\"'`]*)"],
+    ["className\\s*=\\s*{[\"'`]([^\"'`]*)[\"'`]}", "([^\"'`]*)"]
+  ]
 }

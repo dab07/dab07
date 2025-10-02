@@ -1,0 +1,35 @@
+/* This file adds the requisite utility classes for Tailwind to work. */
+/* @tailwind directives are processed by PostCSS with Tailwind plugin */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Dark theme base styles */
+@layer base {
+  * {
+    @apply border-gray-800;
+  }
+  
+  body {
+    @apply bg-gray-900 text-gray-100;
+  }
+}
+
+/* Custom dark theme components */
+@layer components {
+  .dark-card {
+    @apply bg-gray-800 border border-gray-700 rounded-lg shadow-lg;
+  }
+  
+  .dark-input {
+    @apply bg-gray-800 border-gray-600 text-gray-100 placeholder-gray-400;
+  }
+  
+  .gradient-text {
+    @apply bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent;
+  }
+  
+  .glow-purple {
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+  }
+}

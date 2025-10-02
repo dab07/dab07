@@ -1,98 +1,169 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import React from 'react';
+import { View, Text, ScrollView, Image } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
+import BlackHoleEffect from '@/components/BlackHoleEffect';
+import PortfolioSection from '@/components/PortfolioSection';
+import { MapPin, Calendar, Coffee, Award, Users, Zap } from 'lucide-react-native';
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+export default function AboutScreen() {
+    return (
+        <View className="flex-1 bg-gray-900">
+            <BlackHoleEffect />
 
-export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+            <SafeAreaView className="flex-1" edges={['bottom']}>
+                <ScrollView
+                    className="flex-1"
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{ paddingVertical: 120, paddingBottom: 40 }}
+                >
+                    <PortfolioSection>
+                        <View className="items-center mb-10">
+                            <LinearGradient
+                                colors={['rgba(139, 92, 246, 0.2)', 'rgba(168, 85, 247, 0.1)']}
+                                className="w-full p-10 rounded-3xl items-center dark-card"
+                            >
+                                <View className="w-32 h-32 rounded-full mb-6 overflow-hidden border-4 border-purple-400/50 glow-purple">
+                                    <Image
+                                        source={{ uri: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=400' }}
+                                        className="w-full h-full"
+                                        resizeMode="cover"
+                                    />
+                                </View>
+                                <Text className="text-lg text-gray-400 font-medium mb-2">Hello, I'm</Text>
+                                <Text className="text-5xl font-bold text-gray-100 mb-2 text-center">Alex Thompson</Text>
+                                <Text className="text-xl gradient-text font-semibold mb-4">Full Stack Developer</Text>
+                                <Text className="text-base text-gray-300 text-center leading-6 max-w-sm">
+                                    Crafting digital experiences with passion and precision
+                                </Text>
+                            </LinearGradient>
+                        </View>
+                    </PortfolioSection>
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
-  );
+                    <PortfolioSection delay={200}>
+                        <View className="mb-10">
+                            <Text className="text-3xl font-bold text-gray-100 mb-4">About Me</Text>
+                            <Text className="text-base text-gray-300 leading-7 mb-6">
+                                I'm a passionate full-stack developer with 5+ years of experience
+                                building scalable web applications and mobile apps. I specialize in
+                                React, Node.js, and modern JavaScript technologies, with a keen eye
+                                for creating intuitive user experiences.
+                            </Text>
+
+                            <View className="space-y-4">
+                                <View className="flex-row items-center space-x-3">
+                                    <MapPin size={20} color="#3b82f6" />
+                                    <Text className="text-base text-gray-300 font-medium">San Francisco, CA</Text>
+                                </View>
+                                <View className="flex-row items-center space-x-3">
+                                    <Calendar size={20} color="#8B5CF6" />
+                                    <Text className="text-base text-gray-300 font-medium">5+ Years Experience</Text>
+                                </View>
+                                <View className="flex-row items-center space-x-3">
+                                    <Coffee size={20} color="#8B5CF6" />
+                                    <Text className="text-base text-gray-300 font-medium">Coffee Enthusiast</Text>
+                                </View>
+                            </View>
+                        </View>
+                    </PortfolioSection>
+
+                    <PortfolioSection delay={300}>
+                        <View className="mb-10">
+                            <Text className="text-3xl font-bold text-gray-100 mb-6">What I Do</Text>
+                            <View className="space-y-4">
+                                <View className="dark-card p-5 rounded-2xl flex-row items-start space-x-4">
+                                    <View className="w-12 h-12 bg-purple-900/50 rounded-xl items-center justify-center">
+                                        <Zap size={24} color="#8B5CF6" />
+                                    </View>
+                                    <View className="flex-1">
+                                        <Text className="text-lg font-semibold text-gray-100 mb-2">Frontend Development</Text>
+                                        <Text className="text-sm text-gray-300 leading-5">
+                                            Creating responsive, interactive user interfaces with React, React Native, and modern CSS frameworks.
+                                        </Text>
+                                    </View>
+                                </View>
+
+                                <View className="dark-card p-5 rounded-2xl flex-row items-start space-x-4">
+                                    <View className="w-12 h-12 bg-purple-900/50 rounded-xl items-center justify-center">
+                                        <Award size={24} color="#A855F7" />
+                                    </View>
+                                    <View className="flex-1">
+                                        <Text className="text-lg font-semibold text-gray-100 mb-2">Backend Development</Text>
+                                        <Text className="text-sm text-gray-300 leading-5">
+                                            Building scalable APIs and server-side applications with Node.js, Python, and cloud technologies.
+                                        </Text>
+                                    </View>
+                                </View>
+
+                                <View className="dark-card p-5 rounded-2xl flex-row items-start space-x-4">
+                                    <View className="w-12 h-12 bg-purple-900/50 rounded-xl items-center justify-center">
+                                        <Users size={24} color="#C084FC" />
+                                    </View>
+                                    <View className="flex-1">
+                                        <Text className="text-lg font-semibold text-gray-100 mb-2">Team Leadership</Text>
+                                        <Text className="text-sm text-gray-300 leading-5">
+                                            Leading development teams and mentoring junior developers to deliver high-quality solutions.
+                                        </Text>
+                                    </View>
+                                </View>
+                            </View>
+                        </View>
+                    </PortfolioSection>
+
+                    <PortfolioSection delay={400}>
+                        <View className="mb-10">
+                            <Text className="text-3xl font-bold text-gray-100 mb-4">Philosophy</Text>
+                            <View className="dark-card p-6 rounded-2xl glow-purple">
+                                <Text className="text-lg text-gray-200 font-medium italic text-center leading-8">
+                                    "Code is like poetry - it should be elegant, purposeful, and
+                                    tell a story. Every line should have intention, every function
+                                    should serve a purpose, and every project should make a difference."
+                                </Text>
+                            </View>
+                        </View>
+                    </PortfolioSection>
+
+                    <PortfolioSection delay={600}>
+                        <View className="mb-10">
+                            <Text className="text-3xl font-bold text-gray-100 mb-6">My Journey</Text>
+                            <View className="pl-5">
+                                <View className="flex-row mb-8 items-start">
+                                    <View className="w-3 h-3 rounded-full bg-purple-500 mr-5 mt-1.5" />
+                                    <View className="flex-1">
+                                        <Text className="text-sm text-purple-400 font-semibold mb-1">2024</Text>
+                                        <Text className="text-lg font-semibold text-gray-100 mb-2">Senior Full Stack Developer</Text>
+                                        <Text className="text-sm text-gray-300 leading-5">
+                                            Leading development of scalable web applications and mentoring junior developers
+                                        </Text>
+                                    </View>
+                                </View>
+
+                                <View className="flex-row mb-8 items-start">
+                                    <View className="w-3 h-3 rounded-full bg-purple-500 mr-5 mt-1.5" />
+                                    <View className="flex-1">
+                                        <Text className="text-sm text-purple-400 font-semibold mb-1">2022</Text>
+                                        <Text className="text-lg font-semibold text-gray-100 mb-2">Full Stack Developer</Text>
+                                        <Text className="text-sm text-gray-300 leading-5">
+                                            Built modern React applications with Node.js backends and cloud infrastructure
+                                        </Text>
+                                    </View>
+                                </View>
+
+                                <View className="flex-row mb-8 items-start">
+                                    <View className="w-3 h-3 rounded-full bg-purple-500 mr-5 mt-1.5" />
+                                    <View className="flex-1">
+                                        <Text className="text-sm text-purple-400 font-semibold mb-1">2019</Text>
+                                        <Text className="text-lg font-semibold text-gray-100 mb-2">Frontend Developer</Text>
+                                        <Text className="text-sm text-gray-300 leading-5">
+                                            Started my journey with React and modern web technologies
+                                        </Text>
+                                    </View>
+                                </View>
+                            </View>
+                        </View>
+                    </PortfolioSection>
+                </ScrollView>
+            </SafeAreaView>
+        </View>
+    );
 }
-
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});
