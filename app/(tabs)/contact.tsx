@@ -78,8 +78,6 @@ export default function ContactScreen () {
     };
     return (
         <View className='flex-1'>
-            <BlackHoleEffect />
-
             <SafeAreaView className="flex-1" edges={['bottom']}>
                 <ScrollView
                     className="flex-1"

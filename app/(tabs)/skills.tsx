@@ -94,7 +94,6 @@ export default function SkillsScreen() {
 
     return (
         <View className="flex-1">
-            <BlackHoleEffect/>
 
             <SafeAreaView className="flex-1" edges={['bottom']}>
                 <ScrollView

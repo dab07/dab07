@@ -7,10 +7,9 @@ import Animated, {
     useAnimatedStyle,
     withTiming,
     withSpring,
-    runOnJS, useAnimatedReaction,
+    useAnimatedReaction,
 } from 'react-native-reanimated';
-import { BlurView } from 'expo-blur';
-import { Menu, X, User, Code, Award, Mail, Home } from 'lucide-react-native';
+import { Menu, X, Mail, Home } from 'lucide-react-native';
 
 const { width } = Dimensions.get('window');
 
@@ -21,21 +20,22 @@ interface FloatingNavBarProps {
 }
 
 const navItems = [
-    { id: 'index', label: 'About', icon: User },
-    { id: 'projects', label: 'Projects', icon: Code },
-    { id: 'skills', label: 'Skills', icon: Award },
-    { id: 'contact', label: 'Contact', icon: Mail },
+    { id : 'workex', label: 'Work Experience' },
+    { id: 'internship', label: 'Internships' },
+    { id: 'projects', label: 'Projects' },
+    { id: 'skills', label: 'Skills' },
+    { id: 'testimonials', label:'Testimonials' }
 ];
 
 export default function FloatingNavBar({ activeTab, onTabPress, scrollY }: FloatingNavBarProps) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [isVisible, setIsVisible] = useState(true);
-    const [lastScrollY, setLastScrollY] = useState(0);
+    const [contactPressed, setContactPressed] = useState(false);
 
     const navOpacity = useSharedValue(1);
     const navTranslateY = useSharedValue(0);
     const menuScale = useSharedValue(0);
     const menuOpacity = useSharedValue(0);
+    const contactScale = useSharedValue(1);
 
     // Handle scroll-based visibility
     useAnimatedReaction(
@@ -46,11 +46,8 @@ export default function FloatingNavBar({ activeTab, onTabPress, scrollY }: Float
             const isScrollingDown = currentScrollY > previousScrollY;
             const shouldHide = isScrollingDown && currentScrollY > 100;
 
-            runOnJS(setIsVisible)(!shouldHide);
             navOpacity.value = withTiming(!shouldHide ? 1 : 0.8, { duration: 300 });
             navTranslateY.value = withTiming(!shouldHide ? 0 : -10, { duration: 300 });
-
-            runOnJS(setLastScrollY)(currentScrollY);
         },
         [scrollY]
     );
@@ -73,6 +70,17 @@ export default function FloatingNavBar({ activeTab, onTabPress, scrollY }: Float
         }
     };
 
+    const handleContactPress = () => {
+        setContactPressed(true);
+        contactScale.value = withSpring(0.95, { damping: 15, stiffness: 300 });
+
+        setTimeout(() => {
+            contactScale.value = withSpring(1, { damping: 15, stiffness: 300 });
+            setContactPressed(false);
+            onTabPress('contact');
+        }, 150);
+    };
+
     const navAnimatedStyle = useAnimatedStyle(() => {
         return {
             opacity: navOpacity.value,
@@ -87,138 +95,128 @@ export default function FloatingNavBar({ activeTab, onTabPress, scrollY }: Float
         };
     });
 
-    const isTablet = width >= 768;
+    const contactAnimatedStyle = useAnimatedStyle(() => {
+        return {
+            transform: [{ scale: contactScale.value }],
+        };
+    });
+
     const isMobile = width < 768;
 
     return (
         <>
             <Animated.View style={[styles.navContainer, navAnimatedStyle]}>
                 <SafeAreaView edges={['top']} style={styles.safeArea}>
-                    <BlurView intensity={80} tint="light" style={styles.blurContainer}>
-                        <LinearGradient
-                            colors={['rgba(255, 255, 255, 0.95)', 'rgba(255, 255, 255, 0.85)']}
-                            style={styles.navContent}
-                        >
-                            {/* Desktop Navigation */}
-                            {!isMobile && (
-                                <View style={styles.desktopNav}>
-                                    <View style={styles.logoContainer}>
-                                        <LinearGradient
-                                            colors={['#3b82f6', '#1d4ed8']}
-                                            style={styles.logoGradient}
-                                        >
-                                            <Home size={20} color="#ffffff" />
-                                        </LinearGradient>
-                                        <Text style={styles.logoText}>Portfolio</Text>
-                                    </View>
-
-                                    <View style={styles.navItems}>
-                                        {navItems.map((item) => {
-                                            const Icon = item.icon;
-                                            const isActive = activeTab === item.id;
-
-                                            return (
-                                                <Pressable
-                                                    key={item.id}
-                                                    style={[styles.navItem, isActive && styles.navItemActive]}
-                                                    onPress={() => handleTabPress(item.id)}
-                                                >
-                                                    {isActive && (
-                                                        <LinearGradient
-                                                            colors={['rgba(59, 130, 246, 0.1)', 'rgba(29, 78, 216, 0.1)']}
-                                                            style={styles.activeBackground}
-                                                        />
-                                                    )}
-                                                    <Icon
-                                                        size={18}
-                                                        color={isActive ? '#3b82f6' : '#6b7280'}
-                                                    />
-                                                    <Text style={[
-                                                        styles.navItemText,
-                                                        isActive && styles.navItemTextActive
-                                                    ]}>
-                                                        {item.label}
-                                                    </Text>
-                                                </Pressable>
-                                            );
-                                        })}
-                                    </View>
-                                </View>
-                            )}
-
-                            {/* Mobile Navigation */}
-                            {isMobile && (
-                                <View style={styles.mobileNav}>
-                                    <View style={styles.logoContainer}>
-                                        <LinearGradient
-                                            colors={['#3b82f6', '#1d4ed8']}
-                                            style={styles.logoGradient}
-                                        >
-                                            <Home size={18} color="#ffffff" />
-                                        </LinearGradient>
-                                        <Text style={styles.logoTextMobile}>Portfolio</Text>
-                                    </View>
-
-                                    <Pressable style={styles.menuButton} onPress={toggleMenu}>
-                                        <LinearGradient
-                                            colors={isMenuOpen ? ['#ef4444', '#dc2626'] : ['#3b82f6', '#1d4ed8']}
-                                            style={styles.menuButtonGradient}
-                                        >
-                                            {isMenuOpen ? (
-                                                <X size={20} color="#ffffff" />
-                                            ) : (
-                                                <Menu size={20} color="#ffffff" />
-                                            )}
-                                        </LinearGradient>
-                                    </Pressable>
-                                </View>
-                            )}
-                        </LinearGradient>
-                    </BlurView>
-                </SafeAreaView>
-            </Animated.View>
-
-            {/* Mobile Menu Overlay */}
-            {isMobile && isMenuOpen && (
-                <Animated.View style={[styles.menuOverlay, menuAnimatedStyle]}>
-                    <BlurView intensity={100} tint="light" style={styles.menuBlur}>
-                        <LinearGradient
-                            colors={['rgba(255, 255, 255, 0.98)', 'rgba(255, 255, 255, 0.95)']}
-                            style={styles.menuContent}
-                        >
-                            <View style={styles.menuItems}>
-                                {navItems.map((item, index) => {
-                                    const Icon = item.icon;
-                                    const isActive = activeTab === item.id;
-
+                    {!isMobile && (
+                        <View className='flex-1 flex-row justify-between'>
+                            <Pressable onPress={() => handleTabPress('index')}>
+                                <Text className="text-6xl font-medium bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 bg-clip-text text-transparent animate-gradient-x m-4">Dab07</Text>
+                            </Pressable>
+                            <View className='flex-row mt-4 gap-20 justify-center'>
+                                {navItems.map((item) => {
                                     return (
                                         <Pressable
                                             key={item.id}
-                                            style={[styles.menuItem, isActive && styles.menuItemActive]}
                                             onPress={() => handleTabPress(item.id)}
                                         >
-                                            {isActive && (
-                                                <LinearGradient
-                                                    colors={['rgba(59, 130, 246, 0.1)', 'rgba(29, 78, 216, 0.1)']}
-                                                    style={styles.menuItemBackground}
-                                                />
-                                            )}
-                                            <Icon
-                                                size={24}
-                                                color={isActive ? '#3b82f6' : '#6b7280'}
-                                            />
-                                            <Text style={[
-                                                styles.menuItemText,
-                                                isActive && styles.menuItemTextActive
-                                            ]}>
+                                            <Text className='text-white text-xl'>
                                                 {item.label}
                                             </Text>
                                         </Pressable>
                                     );
                                 })}
                             </View>
-                        </LinearGradient>
-                    </BlurView>
+                            <Animated.View style={contactAnimatedStyle}>
+                                <Pressable onPress={handleContactPress}>
+                                    <LinearGradient
+                                        colors={contactPressed ? ['#7c3aed', '#5b21b6'] : ['#8b5cf6', '#7c3aed']}
+                                        style={styles.contactButton}
+                                        start={{ x: 0, y: 0 }}
+                                        end={{ x: 1, y: 1 }}
+                                    >
+                                        <Mail size={18} color="#ffffff" />
+                                        <Text style={styles.contactButtonText}>Contact Me</Text>
+                                    </LinearGradient>
+                                </Pressable>
+                            </Animated.View>
+                        </View>
+                    )}
+
+                    {/* Mobile Navigation */}
+                    {isMobile && (
+                        <View style={styles.mobileNav}>
+                            <View style={styles.logoContainer}>
+                                <LinearGradient
+                                    colors={['#3b82f6', '#1d4ed8']}
+                                    style={styles.logoGradient}
+                                >
+                                    <Home size={18} color="#ffffff" />
+                                </LinearGradient>
+                                <Text style={styles.logoTextMobile}>Portfolio</Text>
+                            </View>
+
+                            <Pressable style={styles.menuButton} onPress={toggleMenu}>
+                                <LinearGradient
+                                    colors={isMenuOpen ? ['#ef4444', '#dc2626'] : ['#3b82f6', '#1d4ed8']}
+                                    style={styles.menuButtonGradient}
+                                >
+                                    {isMenuOpen ? (
+                                        <X size={20} color="#ffffff" />
+                                    ) : (
+                                        <Menu size={20} color="#ffffff" />
+                                    )}
+                                </LinearGradient>
+                            </Pressable>
+                        </View>
+                    )}
+                </SafeAreaView>
+            </Animated.View>
+
+            {/* Mobile Menu Overlay */}
+            {isMobile && isMenuOpen && (
+                <Animated.View style={[styles.menuOverlay, menuAnimatedStyle]}>
+                    <View style={styles.menuItems}>
+                        {navItems.map((item) => {
+                            const isActive = activeTab === item.id;
+
+                            return (
+                                <Pressable
+                                    key={item.id}
+                                    style={[styles.menuItem, isActive && styles.menuItemActive]}
+                                    onPress={() => handleTabPress(item.id)}
+                                >
+                                    {isActive && (
+                                        <LinearGradient
+                                            colors={['rgba(59, 130, 246, 0.1)', 'rgba(29, 78, 216, 0.1)']}
+                                            style={styles.menuItemBackground}
+                                        />
+                                    )}
+                                    <Text style={[
+                                        styles.menuItemText,
+                                        isActive && styles.menuItemTextActive
+                                    ]}>
+                                        {item.label}
+                                    </Text>
+                                </Pressable>
+                            );
+                        })}
+
+                        {/* Contact Me Button for Mobile */}
+                        <Pressable
+                            style={styles.mobileContactButton}
+                            onPress={handleContactPress}
+                        >
+                            <LinearGradient
+                                colors={['#8b5cf6', '#7c3aed']}
+                                style={styles.mobileContactGradient}
+                                start={{ x: 0, y: 0 }}
+                                end={{ x: 1, y: 1 }}
+                            >
+                                <Mail size={24} color="#ffffff" />
+                                <Text style={styles.mobileContactText}>Contact Me</Text>
+                            </LinearGradient>
+                        </Pressable>
+                    </View>
                 </Animated.View>
             )}
         </>
@@ -369,5 +367,52 @@ const styles = StyleSheet.create({
     },
     menuItemTextActive: {
         color: '#3b82f6',
+    },
+    contactButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 20,
+        paddingVertical: 12,
+        borderRadius: 25,
+        gap: 8,
+        marginHorizontal: 12,
+        shadowColor: '#8b5cf6',
+        shadowOffset: {
+            width: 0,
+            height: 4,
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+        elevation: 8,
+    },
+    contactButtonText: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#ffffff',
+    },
+    mobileContactButton: {
+        marginTop: 16,
+        borderRadius: 16,
+        overflow: 'hidden',
+    },
+    mobileContactGradient: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 20,
+        paddingVertical: 16,
+        gap: 16,
+        shadowColor: '#8b5cf6',
+        shadowOffset: {
+            width: 0,
+            height: 4,
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+        elevation: 8,
+    },
+    mobileContactText: {
+        fontSize: 18,
+        fontWeight: '600',
+        color: '#ffffff',
     },
 });

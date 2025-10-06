@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, Pressable, Linking, Image } from 'react-native';
+import { View, Text, ScrollView, Pressable, Linking, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import BlackHoleEffect from '@/components/BlackHoleEffect';
+import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import PortfolioSection from '@/components/PortfolioSection';
 import { GitHubRepo, fetchGitHubRepos } from '@/lib/api';
-import { ExternalLink, Star, GitBranch, Clock, Github } from 'lucide-react-native';
+import { ExternalLink, Star, Clock, Github, Play, Video } from 'lucide-react-native';
 
 export default function ProjectsScreen() {
     const [repos, setRepos] = useState<GitHubRepo[]>([]);
@@ -60,193 +60,117 @@ export default function ProjectsScreen() {
         return colors[language] || '#6b7280';
     };
 
-    // Featured projects with images
-    const featuredProjects = [
+    const hackathonProjects = [
         {
             id: 1,
-            title: 'E-Commerce Platform',
-            description: 'A full-stack e-commerce solution with React, Node.js, and Stripe integration. Features include user authentication, product management, and real-time inventory tracking.',
-            image: 'https://images.pexels.com/photos/230544/pexels-photo-230544.jpeg?auto=compress&cs=tinysrgb&w=800',
-            technologies: ['React', 'Node.js', 'MongoDB', 'Stripe'],
-            github: 'https://github.com/alexthompson/ecommerce-platform',
-            demo: 'https://ecommerce-demo.vercel.app',
+            title: 'Aura Online',
+            description: 'Built a gamified mobile app that turns real-life tasks into RPG-style quests, allowing users to earn and flex "Aura" points through solo or friend challenges. Implemented multi-phase challenges with Aura point flow management, rate limiting, and performance optimization.',
+            link: 'https://auraonline.netlify.app/',
+            github: 'https://github.com/dab07/Aura-Online',
+            image: 'https://images.pexels.com/photos/442576/pexels-photo-442576.jpeg?auto=compress&cs=tinysrgb&w=400',
+            technologies: ['TypeScript', 'Next.js', 'Expo', 'Supabase', 'TailwindCSS'],
+            videoDemo: 'https://youtube.com/shorts/HDKSEvWNoUg?si=Tw1UDe2iJXZvQOl6'
         },
         {
             id: 2,
-            title: 'Task Management App',
-            description: 'A collaborative task management application with real-time updates, team collaboration features, and advanced project tracking capabilities.',
-            image: 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=800',
-            technologies: ['React Native', 'Firebase', 'TypeScript'],
-            github: 'https://github.com/alexthompson/task-manager',
-            demo: 'https://taskmanager-demo.vercel.app',
-        },
-        {
-            id: 3,
-            title: 'Weather Analytics Dashboard',
-            description: 'A comprehensive weather analytics platform with interactive charts, historical data analysis, and predictive modeling using machine learning.',
-            image: 'https://images.pexels.com/photos/1118873/pexels-photo-1118873.jpeg?auto=compress&cs=tinysrgb&w=800',
-            technologies: ['Vue.js', 'Python', 'D3.js', 'AWS'],
-            github: 'https://github.com/alexthompson/weather-dashboard',
-            demo: 'https://weather-analytics.vercel.app',
+            title: 'JirayaAi',
+            description: 'Developed a full-stack AI web app that simulates real interview experiences using Gemini, ChatGPT, and ElevenLabs, supporting both voice and text responses. Integrated Supabase for user authentication, plan management, and interview tracking.',
+            link: 'https://jirayaai.netlify.app',
+            github: 'https://github.com/dab07/hackathon-jirayaai',
+            image: 'https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=400',
+            technologies: ['TypeScript', 'Next.js', 'Expo', 'Supabase', 'TailwindCSS', 'ElevenLabs', 'Gemini'],
+            videoDemo: 'https://youtu.be/RJOTt_o6y8A?si=e6FFf1t4A7XEjiOl'
         },
     ];
 
-    return (
-        <View className="flex-1">
-            <BlackHoleEffect/>
+    // Create pairs for 2-column layout
+    const projectPairs = [];
+    for (let i = 0; i < hackathonProjects.length; i += 2) {
+        projectPairs.push(hackathonProjects.slice(i, i + 2));
+    }
 
+    return (
+        <View className="flex-1 bg-black">
             <SafeAreaView className="flex-1" edges={['bottom']}>
                 <ScrollView
                     className="flex-1"
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={{ paddingVertical: 120, paddingBottom: 40 }}
                 >
-                    <PortfolioSection>
-                        <View className="mb-8">
-                            <Text className="text-4xl font-bold text-gray-900 mb-2">Projects</Text>
-                            <Text className="text-base text-gray-600">
-                                A collection of my recent work and contributions
-                            </Text>
-                        </View>
-                    </PortfolioSection>
-
-                    {/* Featured Projects */}
-                    <PortfolioSection delay={200}>
-                        <View className="mb-8">
-                            <Text className="text-2xl font-bold text-gray-900 mb-6">Featured Projects</Text>
-
-                            {featuredProjects.map((project, index) => (
-                                <View key={project.id} className="mb-6">
-                                    <View className="bg-white/90 rounded-2xl overflow-hidden shadow-lg">
-                                        <Image
-                                            source={{ uri: project.image }}
-                                            className="w-full h-48"
-                                            resizeMode="cover"
-                                        />
-
-                                        <View className="p-6">
-                                            <Text className="text-xl font-bold text-gray-900 mb-3">{project.title}</Text>
-                                            <Text className="text-sm text-gray-600 leading-6 mb-4">
-                                                {project.description}
-                                            </Text>
-
-                                            <View className="flex-row flex-wrap gap-2 mb-4">
-                                                {project.technologies.map((tech, techIndex) => (
-                                                    <View key={techIndex} className="bg-blue-100 px-3 py-1 rounded-full">
-                                                        <Text className="text-xs text-blue-700 font-medium">{tech}</Text>
-                                                    </View>
-                                                ))}
-                                            </View>
-
-                                            <View className="flex-row gap-3">
-                                                <Pressable
-                                                    className="flex-row items-center bg-gray-900 px-4 py-2 rounded-lg"
-                                                    onPress={() => openProject(project.github)}
-                                                >
-                                                    <Github size={16} color="#ffffff" />
-                                                    <Text className="text-white text-sm font-semibold ml-2">Code</Text>
-                                                </Pressable>
-
-                                                <Pressable
-                                                    className="flex-row items-center bg-blue-600 px-4 py-2 rounded-lg"
-                                                    onPress={() => openProject(project.demo)}
-                                                >
-                                                    <ExternalLink size={16} color="#ffffff" />
-                                                    <Text className="text-white text-sm font-semibold ml-2">Live Demo</Text>
-                                                </Pressable>
-                                            </View>
-                                        </View>
-                                    </View>
-                                </View>
-                            ))}
-                        </View>
-                    </PortfolioSection>
-
-                    {/* GitHub Repositories */}
-                    <PortfolioSection delay={400}>
-                        <View className="mb-8">
-                            <Text className="text-2xl font-bold text-gray-900 mb-6">GitHub Repositories</Text>
-
-                            {loading ? (
-                                <View className="p-10 items-center">
-                                    <Text className="text-base text-gray-600 font-medium">Loading projects...</Text>
-                                </View>
-                            ) : error ? (
-                                <View className="p-10 items-center">
-                                    <Text className="text-base text-red-600 font-medium mb-4 text-center">{error}</Text>
-                                    <Pressable className="bg-blue-600 px-5 py-2 rounded-lg" onPress={loadProjects}>
-                                        <Text className="text-white font-semibold">Retry</Text>
-                                    </Pressable>
-                                </View>
-                            ) : (
-                                repos.map((repo, index) => (
-                                    <Pressable
-                                        key={repo.id}
-                                        className="mb-5"
-                                        onPress={() => openProject(repo.html_url)}
-                                    >
-                                        <LinearGradient
-                                            colors={['rgba(255, 255, 255, 0.9)', 'rgba(255, 255, 255, 0.7)']}
-                                            className="p-5 rounded-2xl"
-                                        >
-                                            <View className="flex-row justify-between items-start mb-3">
-                                                <Text className="text-lg font-bold text-gray-900 flex-1">{repo.name}</Text>
-                                                <ExternalLink size={20} color="#3b82f6" />
-                                            </View>
-
-                                            <Text className="text-sm text-gray-600 leading-5 mb-4">
-                                                {repo.description || 'No description available'}
-                                            </Text>
-
-                                            <View className="flex-row items-center gap-4 mb-4">
-                                                <View className="flex-row items-center gap-1">
-                                                    <Star size={16} color="#fbbf24" />
-                                                    <Text className="text-xs text-gray-600 font-medium">{repo.stargazers_count}</Text>
-                                                </View>
-
-                                                {repo.language && (
-                                                    <View className="flex-row items-center gap-1">
-                                                        <View
-                                                            className="w-2 h-2 rounded-full"
-                                                            style={{ backgroundColor: getLanguageColor(repo.language) }}
-                                                        />
-                                                        <Text className="text-xs text-gray-600 font-medium">{repo.language}</Text>
-                                                    </View>
-                                                )}
-
-                                                <View className="flex-row items-center gap-1">
-                                                    <Clock size={16} color="#6b7280" />
-                                                    <Text className="text-xs text-gray-600 font-medium">{formatDate(repo.updated_at)}</Text>
-                                                </View>
-                                            </View>
-
-                                            {repo.topics && repo.topics.length > 0 && (
-                                                <View className="flex-row flex-wrap gap-2 mb-4">
-                                                    {repo.topics.slice(0, 3).map((topic, topicIndex) => (
-                                                        <View key={topicIndex} className="bg-blue-100 px-2 py-1 rounded-lg">
-                                                            <Text className="text-xs text-blue-700 font-medium">{topic}</Text>
-                                                        </View>
-                                                    ))}
-                                                </View>
-                                            )}
-
-                                            {repo.homepage && (
-                                                <View className="items-start">
+                    <View className="mb-8 px-4">
+                        <h1 className="text-3xl md:text-3xl font-meduim bg-gradient-to-r from-purple-900 via-fuchsia-600 to-blue-300 bg-clip-text text-transparent animate-gradient-x mb-6">Hackathon Projects</h1>
+                        {projectPairs.map((pair, pairIndex) => (
+                            <View key={pairIndex} className="flex-row gap-4 mb-6 mx-20">
+                                {pair.map((project) => {
+                                    const ProjectCard = () => {
+                                        return (
+                                            <Pressable
+                                                onPress={() => openProject(project.link)}
+                                                className="flex-1 group transition-all"
+                                            >
+                                                <View className="
+                                                        rounded-2xl overflow-hidden border border-gray-700 bg-zinc-950
+                                                            transition-all
+                                                            group-hover:border-purple-500/70
+                                                            group-hover:shadow-[0_0_30px_rgba(168,85,247,0.4)]
+                                                            group-hover:scale-[1.02]
+                                                        ">
                                                     <Pressable
-                                                        className="flex-row items-center bg-blue-600 px-4 py-2 rounded-lg"
-                                                        onPress={() => openProject(repo.homepage!)}
+                                                        className="absolute top-3 right-3 z-10 bg-gray-800/80 p-2 rounded-full"
+                                                        onPress={(e) => {
+                                                            e.stopPropagation();
+                                                            openProject(project.github);
+                                                        }}
                                                     >
-                                                        <Text className="text-white text-sm font-semibold mr-2">Live Demo</Text>
-                                                        <ExternalLink size={16} color="#ffffff" />
-                                                    </Pressable>
+                                                        <Github size={24} color="#ffffff" />
+                                                    </Pressable><View className="flex-row p-4">
+                                                        {/* Image - Top Left */}
+                                                        <View className="w-80 h-40 rounded-lg overflow-hidden mr-3">
+                                                            <Image
+                                                                source={{ uri: project.image }}
+                                                                className="w-full h-full"
+                                                                resizeMode="cover"
+                                                            />
+                                                        </View>
+                                                        <View className="flex-1 pr-8">
+                                                            <Text className="text-2xl font-bold text-white mb-2" numberOfLines={2}>
+                                                                {project.title}
+                                                            </Text>
+                                                            <View className="flex-row flex-wrap gap-1 mb-2">
+                                                                {project.technologies.map((tech, techIndex) => (
+                                                                    <View key={techIndex} className="bg-purple-900/50 bg-clip-text mx-2">
+                                                                        <Text className="text-sm text-purple-300 font-medium">{tech}</Text>
+                                                                    </View>
+                                                                ))}
+                                                            </View>
+                                                            <Pressable
+                                                                className="flex-row items-center bg-red-600/20 px-2 py-1 rounded-md self-start"
+                                                                onPress={(e) => {
+                                                                    e.stopPropagation();
+                                                                    openProject(project.videoDemo);
+                                                                }}
+                                                            >
+                                                                <Video size={12} color="#ef4444" />
+                                                                <Text className="text-xs text-red-400 font-medium ml-1">Watch Demo</Text>
+                                                            </Pressable>
+                                                        </View>
+                                                    </View>
+                                                    <View className="px-4 pb-4">
+                                                        <Text className="text-xl text-gray-300 leading-5" numberOfLines={4}>
+                                                            {project.description}
+                                                        </Text>
+                                                    </View>
                                                 </View>
-                                            )}
-                                        </LinearGradient>
-                                    </Pressable>
-                                ))
-                            )}
-                        </View>
-                    </PortfolioSection>
+                                            </Pressable>
+                                        );
+                                    };
+
+                                    return <ProjectCard key={project.id} />;
+                                })}
+                                {pair.length === 1 && <View className="flex-1" />}
+                            </View>
+                        ))}
+                    </View>
                 </ScrollView>
             </SafeAreaView>
         </View>

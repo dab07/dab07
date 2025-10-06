@@ -52,7 +52,7 @@ export default function TabLayout() {
                 screenOptions={{
                     headerShown: false,
                     tabBarStyle: {
-                        display: 'none', // Hide default tab bar since we're using floating nav
+                        display: 'none',
                     },
                     tabBarActiveTintColor: '#3b82f6',
                     tabBarInactiveTintColor: '#6b7280',
