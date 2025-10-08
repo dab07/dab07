@@ -427,14 +427,14 @@ const BlackHoleEffect: React.FC = () => {
   }, []);
 // ref={containerRef}
   return (
-    <div ref={containerRef} className="blackhole-container" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}>
+    <div ref={containerRef}className="blackhole-container" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}>
       {/* Intro Overlay - Positioned on Left */}
       {/* <div className="absolute top-1/2 -translate-y-1/2 left-16 z-10">
         <div className="bg-gradient-to-r from-purple-500 via-purple-400 to-purple-300 bg-clip-text text-transparent text-4xl">Full Stack AI Developer</div>
         <div className="text-white text-9xl font-bold">Harshit Sharma</div>
       </div> */}
        <div className="absolute top-1/2 left-16 -translate-y-1/2 z-10 space-y-0.5">
-        <h2 className="text-3xl md:text-4xl  bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 bg-clip-text text-transparent animate-gradient-x">
+        <h2 className="text-3xl md:text-4xl font-medium bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 bg-clip-text text-transparent animate-gradient-x">
           Full Stack AI Developer
         </h2>
         <h1 className="text-7xl md:text-8xl font-extrabold text-white drop-shadow-[0_0_30px_rgba(168,85,247,0.8)]">
@@ -446,4 +446,3 @@ const BlackHoleEffect: React.FC = () => {
 };
 
 export default BlackHoleEffect;
-font-medium
