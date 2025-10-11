@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View } from 'react-native';
 import { Tabs, useRouter, useSegments } from 'expo-router';
-import { User, Code, Mail, Award } from 'lucide-react-native';
+import { User, Code, Mail, Award, Briefcase, GraduationCap, MessageSquare } from 'lucide-react-native';
 import FloatingNavBar from '@/components/FloatingNavBar';
 import { useSharedValue } from 'react-native-reanimated';
 import '@/global.css';
@@ -15,16 +15,24 @@ export default function TabLayout() {
     const handleTabPress = (tabId: string) => {
         setActiveTab(tabId);
 
-        // Use explicit route strings for type safety
         switch (tabId) {
             case 'index':
                 router.push('/(tabs)');
+                break;
+            case 'workexp':
+                router.push('/(tabs)/workexp');
+                break;
+            case 'internship':
+                router.push('/(tabs)/internship');
                 break;
             case 'projects':
                 router.push('/(tabs)/projects');
                 break;
             case 'skills':
                 router.push('/(tabs)/skills');
+                break;
+            case 'testimonials':
+                router.push('/(tabs)/testimonials');
                 break;
             case 'contact':
                 router.push('/(tabs)/contact');
@@ -71,6 +79,24 @@ export default function TabLayout() {
                     }}
                 />
                 <Tabs.Screen
+                    name="workexp"
+                    options={{
+                        title: 'Work Experience',
+                        tabBarIcon: ({ size, color }) => (
+                            <Briefcase size={size} color={color} />
+                        ),
+                    }}
+                />
+                <Tabs.Screen
+                    name="internship"
+                    options={{
+                        title: 'Internship',
+                        tabBarIcon: ({ size, color }) => (
+                            <GraduationCap size={size} color={color} />
+                        ),
+                    }}
+                />
+                <Tabs.Screen
                     name="projects"
                     options={{
                         title: 'Projects',
@@ -85,6 +111,15 @@ export default function TabLayout() {
                         title: 'Skills',
                         tabBarIcon: ({ size, color }) => (
                             <Award size={size} color={color} />
+                        ),
+                    }}
+                />
+                <Tabs.Screen
+                    name="testimonials"
+                    options={{
+                        title: 'Testimonials',
+                        tabBarIcon: ({ size, color }) => (
+                            <MessageSquare size={size} color={color} />
                         ),
                     }}
                 />

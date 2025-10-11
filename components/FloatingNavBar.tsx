@@ -20,11 +20,11 @@ interface FloatingNavBarProps {
 }
 
 const navItems = [
-    { id : 'workex', label: 'Work Experience' },
+    { id: 'workexp', label: 'Work Experience' },
     { id: 'internship', label: 'Internships' },
     { id: 'projects', label: 'Projects' },
     { id: 'skills', label: 'Skills' },
-    { id: 'testimonials', label:'Testimonials' }
+    { id: 'testimonials', label: 'Testimonials' }
 ];
 
 export default function FloatingNavBar({ activeTab, onTabPress, scrollY }: FloatingNavBarProps) {
