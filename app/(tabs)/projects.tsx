@@ -154,7 +154,7 @@ connections, and scalable backend integration via Supabase.`,
         return (
             <Animated.View
                 style={[animatedCardStyle, glowStyle]}
-                className="w-[540px] mb-6 mx-2"
+                className="w-full max-w-md mb-6 mx-2"
             >
                 <Pressable
                     onPress={() => openProject(project.link)}
@@ -266,7 +266,7 @@ connections, and scalable backend integration via Supabase.`,
 
     return (
         <AnimatedScreenWrapper screenName="projects">
-            <View className="flex-1 bg-black px-[250px]">
+            <View className="flex-1 bg-black">
                 <CosmicParticles particleCount={25} />
             <View className="absolute inset-0">
                 {[...Array(50)].map((_, i) => (
