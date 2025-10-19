@@ -1,224 +1,164 @@
-import React, { useState } from 'react';
-import { View, Text, ScrollView, TextInput, Pressable, Alert } from 'react-native';
+import React from 'react';
+import { View, Text, Pressable, Linking, Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import BlackHoleEffect from '../../components/BlackHoleEffect';
-import PortfolioSection from '../..//components/PortfolioSection';
+import Animated, {
+    useSharedValue,
+    useAnimatedScrollHandler
+} from 'react-native-reanimated';
 import AnimatedScreenWrapper from '@/components/AnimatedScreenWrapper';
-import { supabase } from '../..//lib/supabase';
-import { trackEvent } from '../..//lib/api';
-import { Mail, Phone, MapPin, Send, Github, Linkedin } from 'lucide-react-native';
+import CosmicParticles from '@/components/CosmicParticles';
+import { Mail, Copy, ExternalLink } from 'lucide-react-native';
 
-export default function ContactScreen () {
-    const [formData, setFormData] = useState({
-        email: '',
-        subject: '',
-        message: '',
+export default function ContactScreen() {
+    const scrollY = useSharedValue(0);
+    const { width } = Dimensions.get('window');
+    const isTablet = width > 768;
+    const containerWidth = isTablet ? '60%' : '90%';
+
+    const scrollHandler = useAnimatedScrollHandler({
+        onScroll: (event) => {
+            scrollY.value = event.contentOffset.y;
+        },
     });
 
-    const [loading, setLoading] = useState(false);
-    const [errors, setErrors] = useState<Record<string, string>>({});
-
-    const validateForm = () => {
-        const newErrors: Record<string, string> = {};
-        if (!formData.email.trim() || !formData.subject.trim() || !formData.message.trim()) {
-            newErrors.email = 'Invalid details';
-        }
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    }
-
-    const handleSubmit = async () => {
-        if (!validateForm()) return;
-
-        setLoading(true);
-
-        try {
-            const { error } = await supabase
-                .from('contacts')
-                .insert([{
-                    email: formData.email,
-                    subject: formData.subject,
-                    message: formData.message,
-                }]);
-
-            if (error) throw error;
-
-            // Track the contact form submission
-            await trackEvent('contact_form_submit', 'contact');
-
-            Alert.alert(
-                'Success!',
-                'Thank you for your message. I\'ll get back to you soon!',
-                [{ text: 'OK', onPress: () => {
-                        setFormData({ email: '', subject: '', message: '' });
-                        setErrors({});
-                    }}]
-            );
-        } catch (error) {
-            console.error('Error submitting form:', error);
-            Alert.alert(
-                'Error',
-                'Failed to send message. Please try again or contact me directly.'
-            );
-        } finally {
-            setLoading(false);
-        }
-    };
+    const email = '7novharshit@gmail.com';
 
     const openEmail = () => {
-        Alert.alert('Email', 'alex.thompson@example.com');
+        Linking.openURL(`mailto:${email}`);
     };
 
-    const openLinkedIn = () => {
-        Alert.alert('LinkedIn', 'Coming soon!');
-    };
-
-    const openGitHub = () => {
-        Alert.alert('GitHub', 'Coming soon!');
+    const copyEmail = async () => {
+        // For web compatibility, we'll use a simple approach
+        try {
+            if (navigator?.clipboard) {
+                await navigator.clipboard.writeText(email);
+            }
+        } catch (error) {
+            console.log('Copy not supported on this platform');
+        }
     };
     return (
         <AnimatedScreenWrapper screenName="contact">
-            <View className='flex-1'>
+            <View className="flex-1 bg-black">
+                <CosmicParticles particleCount={25} />
+
+                {/* Stars Background */}
+                <View className="absolute inset-0">
+                    {[...Array(50)].map((_, i) => (
+                        <View
+                            key={i}
+                            className="absolute w-0.5 h-0.5 bg-white rounded-full animate-pulse"
+                            style={{
+                                left: `${Math.random() * 100}%`,
+                                top: `${Math.random() * 100}%`,
+                                animationDelay: `${Math.random() * 3}s`,
+                                opacity: Math.random() * 0.8 + 0.2,
+                            }}
+                        />
+                    ))}
+                </View>
+
                 <SafeAreaView className="flex-1" edges={['bottom']}>
-                <ScrollView
-                    className="flex-1"
-                    showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{ paddingVertical: 120, paddingBottom: 40 }}
-                >
-                    <PortfolioSection>
-                        <View className="mb-8">
-                            <Text className="text-4xl font-bold text-gray-900 mb-2">Get in Touch</Text>
-                            <Text className="text-base text-gray-600">
-                                Let&apos;s discuss your next project or just say hello!
-                            </Text>
-                        </View>
-                    </PortfolioSection>
-
-                    {/* Contact Info */}
-                    <PortfolioSection delay={200}>
-                        <View className="mb-8">
-                            <Text className="text-2xl font-bold text-gray-900 mb-4">Contact Information</Text>
-
-                            <View className="space-y-4">
-                                <Pressable className="flex-row items-center bg-white/80 p-4 rounded-xl space-x-4" onPress={openEmail}>
-                                    <View className="w-12 h-12 bg-blue-100 rounded-xl items-center justify-center">
-                                        <Mail size={20} color="#3b82f6" />
-                                    </View>
-                                    <View className="flex-1">
-                                        <Text className="text-base font-semibold text-gray-900">Email</Text>
-                                        <Text className="text-sm text-gray-600">alex.thompson@example.com</Text>
-                                    </View>
-                                </Pressable>
-
-                                <View className="flex-row items-center bg-white/80 p-4 rounded-xl space-x-4">
-                                    <View className="w-12 h-12 bg-green-100 rounded-xl items-center justify-center">
-                                        <Phone size={20} color="#10b981" />
-                                    </View>
-                                    <View className="flex-1">
-                                        <Text className="text-base font-semibold text-gray-900">Phone</Text>
-                                        <Text className="text-sm text-gray-600">+1 (555) 123-4567</Text>
-                                    </View>
-                                </View>
-
-                                <View className="flex-row items-center bg-white/80 p-4 rounded-xl space-x-4">
-                                    <View className="w-12 h-12 bg-yellow-100 rounded-xl items-center justify-center">
-                                        <MapPin size={20} color="#f59e0b" />
-                                    </View>
-                                    <View className="flex-1">
-                                        <Text className="text-base font-semibold text-gray-900">Location</Text>
-                                        <Text className="text-sm text-gray-600">San Francisco, CA</Text>
-                                    </View>
-                                </View>
-                            </View>
-                        </View>
-                    </PortfolioSection>
-
-                    {/* Social Links */}
-                    <PortfolioSection delay={300}>
-                        <View className="mb-8">
-                            <Text className="text-2xl font-bold text-gray-900 mb-4">Connect with Me</Text>
-
-                            <View className="flex-row flex-wrap gap-3">
-                                <Pressable className="flex-row items-center bg-gray-900 px-5 py-3 rounded-xl space-x-2" onPress={openGitHub}>
-                                    <Github size={20} color="#ffffff" />
-                                    <Text className="text-white text-base font-semibold">GitHub</Text>
-                                </Pressable>
-
-                                <Pressable className="flex-row items-center bg-blue-600 px-5 py-3 rounded-xl space-x-2" onPress={openLinkedIn}>
-                                    <Linkedin size={20} color="#ffffff" />
-                                    <Text className="text-white text-base font-semibold">LinkedIn</Text>
-                                </Pressable>
-                            </View>
-                        </View>
-                    </PortfolioSection>
-
-                    {/* Contact Form */}
-                    <PortfolioSection delay={400}>
-                        <View className="mb-8">
-                            <Text className="text-2xl font-bold text-gray-900 mb-6">Send a Message</Text>
-
-                            <LinearGradient
-                                colors={['rgba(255, 255, 255, 0.9)', 'rgba(255, 255, 255, 0.7)']}
-                                className="p-5 rounded-2xl"
-                            >
-                                <View className="mb-5">
-                                    <Text className="text-base font-semibold text-gray-900 mb-2">Email</Text>
-                                    <TextInput
-                                        className={`border border-gray-300 rounded-lg p-3 text-base text-gray-900 bg-white ${errors.email ? 'border-red-500' : ''}`}
-                                        value={formData.email}
-                                        onChangeText={(text) => setFormData({ ...formData, email: text })}
-                                        placeholder="your.email@example.com"
-                                        placeholderTextColor="#9ca3af"
-                                        keyboardType="email-address"
-                                        autoCapitalize="none"
-                                    />
-                                    {errors.email && <Text className="text-red-500 text-sm mt-1">{errors.email}</Text>}
-                                </View>
-
-                                <View className="mb-5">
-                                    <Text className="text-base font-semibold text-gray-900 mb-2">Subject</Text>
-                                    <TextInput
-                                        className={`border border-gray-300 rounded-lg p-3 text-base text-gray-900 bg-white ${errors.subject ? 'border-red-500' : ''}`}
-                                        value={formData.subject}
-                                        onChangeText={(text) => setFormData({ ...formData, subject: text })}
-                                        placeholder="What's this about?"
-                                        placeholderTextColor="#9ca3af"
-                                    />
-                                    {errors.subject && <Text className="text-red-500 text-sm mt-1">{errors.subject}</Text>}
-                                </View>
-
-                                <View className="mb-5">
-                                    <Text className="text-base font-semibold text-gray-900 mb-2">Message</Text>
-                                    <TextInput
-                                        className={`border border-gray-300 rounded-lg p-3 text-base text-gray-900 bg-white h-32 ${errors.message ? 'border-red-500' : ''}`}
-                                        value={formData.message}
-                                        onChangeText={(text) => setFormData({ ...formData, message: text })}
-                                        placeholder="Tell me about your project or just say hello!"
-                                        placeholderTextColor="#9ca3af"
-                                        multiline
-                                        numberOfLines={6}
-                                        textAlignVertical="top"
-                                    />
-                                    {errors.message && <Text className="text-red-500 text-sm mt-1">{errors.message}</Text>}
-                                </View>
-
-                                <Pressable
-                                    className={`flex-row items-center justify-center p-4 rounded-xl space-x-2 ${loading ? 'bg-gray-400' : 'bg-blue-600'}`}
-                                    onPress={handleSubmit}
-                                    disabled={loading}
-                                >
-                                    <Send size={20} color="#ffffff" />
-                                    <Text className="text-white text-base font-semibold">
-                                        {loading ? 'Sending...' : 'Send Message'}
+                    <Animated.ScrollView
+                        className="flex-1"
+                        showsVerticalScrollIndicator={false}
+                        onScroll={scrollHandler}
+                        scrollEventThrottle={16}
+                        contentContainerStyle={{ paddingTop: 120, paddingBottom: 40 }}
+                    >
+                        <View className="items-center px-4">
+                            <View style={{ width: containerWidth, maxWidth: 600 }}>
+                                {/* Header */}
+                                <View className="mb-12 text-center">
+                                    <Text className="text-4xl font-bold text-white mb-4 text-center">
+                                        Get In Touch
                                     </Text>
-                                </Pressable>
-                            </LinearGradient>
+                                    <Text className="text-gray-400 text-lg leading-6 text-center">
+                                        Ready to collaborate? Let's create something amazing together.
+                                    </Text>
+                                </View>
+
+                                {/* Email Card */}
+                                <View className="bg-gray-900/50 border border-purple-500/30 rounded-2xl p-8 mb-8">
+                                    <LinearGradient
+                                        colors={['rgba(15, 15, 35, 0.95)', 'rgba(5, 5, 15, 0.98)']}
+                                        className="absolute inset-0 rounded-2xl"
+                                    />
+
+                                    <View className="relative z-10 items-center">
+                                        {/* Email Icon */}
+                                        <View className="w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full items-center justify-center mb-6">
+                                            <Mail size={32} color="#ffffff" />
+                                        </View>
+
+                                        {/* Email Address */}
+                                        <Text className="text-2xl font-bold text-white mb-2 text-center">
+                                            Email Me
+                                        </Text>
+                                        <Text className="text-purple-300 text-lg mb-8 text-center">
+                                            {email}
+                                        </Text>
+
+                                        {/* Action Buttons */}
+                                        <View className="flex-row space-x-4 w-full">
+                                            {/* Send Email Button */}
+                                            <Pressable
+                                                onPress={openEmail}
+                                                className="flex-1"
+                                            >
+                                                <LinearGradient
+                                                    colors={['#8b5cf6', '#7c3aed']}
+                                                    className="flex-row items-center justify-center px-6 py-4 rounded-xl"
+                                                    start={{ x: 0, y: 0 }}
+                                                    end={{ x: 1, y: 1 }}
+                                                >
+                                                    <ExternalLink size={20} color="#ffffff" />
+                                                    <Text className="text-white font-semibold ml-2">
+                                                        Send Email
+                                                    </Text>
+                                                </LinearGradient>
+                                            </Pressable>
+
+                                            {/* Copy Email Button */}
+                                            <Pressable
+                                                onPress={copyEmail}
+                                                className="flex-1"
+                                            >
+                                                <View className="flex-row items-center justify-center px-6 py-4 rounded-xl border border-purple-500/50 bg-purple-500/10">
+                                                    <Copy size={20} color="#a855f7" />
+                                                    <Text className="text-purple-300 font-semibold ml-2">
+                                                        Copy
+                                                    </Text>
+                                                </View>
+                                            </Pressable>
+                                        </View>
+                                    </View>
+                                </View>
+
+                                {/* Additional Info */}
+                                <View className="bg-gray-900/30 border border-gray-600/50 rounded-2xl p-6">
+                                    <Text className="text-gray-300 text-center text-base leading-6">
+                                        I'm always excited to discuss new opportunities, collaborations, or just chat about technology and development. 
+                                        Feel free to reach out anytime!
+                                    </Text>
+                                </View>
+
+                                {/* Footer */}
+                                <View className="mt-8">
+                                    <LinearGradient
+                                        colors={['transparent', 'rgba(168, 85, 247, 0.1)', 'transparent']}
+                                        className="h-px w-full mb-6"
+                                    />
+                                    <Text className="text-center text-gray-500 text-sm">
+                                        Looking forward to hearing from you! 🚀
+                                    </Text>
+                                </View>
+                            </View>
                         </View>
-                    </PortfolioSection>
-                </ScrollView>
-            </SafeAreaView>
-        </View>
+                    </Animated.ScrollView>
+                </SafeAreaView>
+            </View>
         </AnimatedScreenWrapper>
-    )
+    );
 }
