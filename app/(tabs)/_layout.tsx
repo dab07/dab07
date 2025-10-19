@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import { Tabs, useRouter, useSegments } from 'expo-router';
 import { User, Code, Mail, Award, Briefcase, GraduationCap, MessageSquare } from 'lucide-react-native';
 import FloatingNavBar from '@/components/FloatingNavBar';
+
 import { useSharedValue } from 'react-native-reanimated';
 import '@/global.css';
 
@@ -28,8 +29,8 @@ export default function TabLayout() {
             case 'projects':
                 router.push('/(tabs)/projects');
                 break;
-            case 'skills':
-                router.push('/(tabs)/skills');
+            case 'aboutme':
+                router.push('/(tabs)/aboutme' as any);
                 break;
             case 'testimonials':
                 router.push('/(tabs)/testimonials');
@@ -50,13 +51,13 @@ export default function TabLayout() {
 
     return (
         <View className="flex-1">
-            <FloatingNavBar
-                activeTab={activeTab}
-                onTabPress={handleTabPress}
-                scrollY={scrollY}
-            />
+                <FloatingNavBar
+                    activeTab={activeTab}
+                    onTabPress={handleTabPress}
+                    scrollY={scrollY}
+                />
 
-            <Tabs
+                <Tabs
                 screenOptions={{
                     headerShown: false,
                     tabBarStyle: {
@@ -68,6 +69,7 @@ export default function TabLayout() {
                         fontSize: 12,
                         fontFamily: 'Inter-Medium',
                     },
+                    animation: 'shift',
                 }}>
                 <Tabs.Screen
                     name="index"
@@ -106,9 +108,9 @@ export default function TabLayout() {
                     }}
                 />
                 <Tabs.Screen
-                    name="skills"
+                    name="aboutme"
                     options={{
-                        title: 'Skills',
+                        title: 'About Me',
                         tabBarIcon: ({ size, color }) => (
                             <Award size={size} color={color} />
                         ),

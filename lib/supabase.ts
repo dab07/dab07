@@ -26,3 +26,13 @@ export interface Analytics {
     user_agent?: string;
     created_at: string;
 }
+
+export interface Testimonial {
+    id: string;
+    name: string;
+    role?: string;
+    company?: string;
+    message: string;
+    rating: number;
+    created_at: string;
+}

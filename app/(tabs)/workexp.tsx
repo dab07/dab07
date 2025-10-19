@@ -7,7 +7,8 @@ import Animated, {
   useAnimatedScrollHandler,
 } from 'react-native-reanimated';
 import CosmicParticles from '@/components/CosmicParticles';
-import CosmicLoader from '@/components/CosmicLoader';
+
+import AnimatedScreenWrapper from '@/components/AnimatedScreenWrapper';
 
 interface WorkItem {
   date: string;
@@ -62,7 +63,7 @@ const workData: WorkGroup[] = [
 ];
 
 export default function WorkExpScreen() {
-  const [loading, setLoading] = useState(true);
+
   const scrollY = useSharedValue(0);
   const scrollHandler = useAnimatedScrollHandler({
     onScroll: (event) => {
@@ -70,29 +71,12 @@ export default function WorkExpScreen() {
     },
   });
 
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1500);
-    return () => clearTimeout(timer);
-  }, []);
 
-  if (loading) {
-    return (
-      <View className="flex-1">
-        <LinearGradient
-          colors={['#000002', '#0a0a1a', '#1a0a2a']}
-          className="absolute inset-0"
-        />
-        <CosmicParticles particleCount={15} />
-        <SafeAreaView className="flex-1" edges={['bottom']}>
-          <CosmicLoader />
-        </SafeAreaView>
-      </View>
-    );
-  }
 
   return (
-    <View className="flex-1 bg-[#050510] bottom-0">
-      <CosmicParticles particleCount={50} />
+    <AnimatedScreenWrapper screenName="workexp">
+      <View className="flex-1 bg-[#050510] bottom-0">
+        <CosmicParticles particleCount={50} />
 
       {/* Star background */}
       <View className="absolute inset-0">
@@ -179,5 +163,6 @@ export default function WorkExpScreen() {
       </SafeAreaView>
       <Text className='text-center text-4xl text-yellow-200 p-4 mt-8'>Start</Text>
     </View>
+    </AnimatedScreenWrapper>
   );
 }

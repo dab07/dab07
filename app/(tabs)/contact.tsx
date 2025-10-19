@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import BlackHoleEffect from '../../components/BlackHoleEffect';
 import PortfolioSection from '../..//components/PortfolioSection';
+import AnimatedScreenWrapper from '@/components/AnimatedScreenWrapper';
 import { supabase } from '../..//lib/supabase';
 import { trackEvent } from '../..//lib/api';
 import { Mail, Phone, MapPin, Send, Github, Linkedin } from 'lucide-react-native';
@@ -77,8 +78,9 @@ export default function ContactScreen () {
         Alert.alert('GitHub', 'Coming soon!');
     };
     return (
-        <View className='flex-1'>
-            <SafeAreaView className="flex-1" edges={['bottom']}>
+        <AnimatedScreenWrapper screenName="contact">
+            <View className='flex-1'>
+                <SafeAreaView className="flex-1" edges={['bottom']}>
                 <ScrollView
                     className="flex-1"
                     showsVerticalScrollIndicator={false}
@@ -217,5 +219,6 @@ export default function ContactScreen () {
                 </ScrollView>
             </SafeAreaView>
         </View>
+        </AnimatedScreenWrapper>
     )
 }

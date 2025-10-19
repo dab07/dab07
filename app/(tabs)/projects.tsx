@@ -11,7 +11,8 @@ import Animated, {
 } from 'react-native-reanimated';
 import { Github, Video, Rocket, Zap, Globe } from 'lucide-react-native';
 import CosmicParticles from '@/components/CosmicParticles';
-import CosmicLoader from '@/components/CosmicLoader';
+
+import AnimatedScreenWrapper from '@/components/AnimatedScreenWrapper';
 
 interface Project {
     id: number;
@@ -27,7 +28,7 @@ interface Project {
 
 export default function ProjectsScreen() {
     const scrollY = useSharedValue(0);
-    const [loading, setLoading] = useState(true);
+
 
     const scrollHandler = useAnimatedScrollHandler({
         onScroll: (event) => {
@@ -39,10 +40,7 @@ export default function ProjectsScreen() {
         Linking.openURL(url);
     };
 
-    useEffect(() => {
-        const timer = setTimeout(() => setLoading(false), 1500);
-        return () => clearTimeout(timer);
-    }, []);
+
 
     const hackathonProjects: Project[] = [
         {
@@ -264,24 +262,12 @@ connections, and scalable backend integration via Supabase.`,
         );
     };
 
-    if (loading) {
-        return (
-            <View className="flex-1">
-                <LinearGradient
-                    colors={['#000002', '#0a0a1a', '#1a0a2a']}
-                    className="absolute inset-0"
-                />
-                <CosmicParticles particleCount={15} />
-                <SafeAreaView className="flex-1" edges={['bottom']}>
-                    <CosmicLoader />
-                </SafeAreaView>
-            </View>
-        );
-    }
+
 
     return (
-        <View className="flex-1 bg-black px-[250px]">
-            <CosmicParticles particleCount={25} />
+        <AnimatedScreenWrapper screenName="projects">
+            <View className="flex-1 bg-black px-[250px]">
+                <CosmicParticles particleCount={25} />
             <View className="absolute inset-0">
                 {[...Array(50)].map((_, i) => (
                     <View
@@ -337,5 +323,6 @@ connections, and scalable backend integration via Supabase.`,
                 </Animated.ScrollView>
             </SafeAreaView>
         </View>
+        </AnimatedScreenWrapper>
     );
 }

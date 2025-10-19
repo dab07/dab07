@@ -9,7 +9,8 @@ import Animated, {
     useAnimatedScrollHandler
 } from 'react-native-reanimated';
 import CosmicParticles from '@/components/CosmicParticles';
-import CosmicLoader from '@/components/CosmicLoader';
+
+import AnimatedScreenWrapper from '@/components/AnimatedScreenWrapper';
 
 interface InternshipItem {
   date: string;
@@ -72,7 +73,7 @@ const internshipData: InternshipGroup[] = [
 
 export default function IntershipScreen() {
     const scrollY = useSharedValue(0);
-    const [loading, setLoading] = useState(true);
+
 
     const scrollHandler = useAnimatedScrollHandler({
         onScroll: (event) => {
@@ -80,29 +81,12 @@ export default function IntershipScreen() {
         },
     });
 
-    useEffect(() => {
-        const timer = setTimeout(() => setLoading(false), 1500);
-        return () => clearTimeout(timer);
-    }, []);
 
-    if (loading) {
-        return (
-            <View className="flex-1">
-                <LinearGradient
-                    colors={['#000002', '#0a0a1a', '#1a0a2a']}
-                    className="absolute inset-0"
-                />
-                <CosmicParticles particleCount={15} />
-                <SafeAreaView className="flex-1" edges={['bottom']}>
-                    <CosmicLoader />
-                </SafeAreaView>
-            </View>
-        );
-    }
 
     return (
-        <View className="flex-1 bg-black">
-            <CosmicParticles particleCount={25} />
+        <AnimatedScreenWrapper screenName="internship">
+            <View className="flex-1 bg-black">
+                <CosmicParticles particleCount={25} />
             <View className="absolute inset-0">
                 {[...Array(50)].map((_, i) => (
                     <View
@@ -197,5 +181,6 @@ export default function IntershipScreen() {
             <Text className='text-center text-4xl text-yellow-200 p-4 mt-8'>Start</Text>    
             </SafeAreaView>
         </View>
+        </AnimatedScreenWrapper>
     );
 }

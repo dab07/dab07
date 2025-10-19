@@ -80,7 +80,7 @@ const CosmicLoader: React.FC = () => {
             </Animated.View>
 
             <Text className="text-purple-300 mt-6 text-lg font-medium">
-                Loading cosmic projects...
+                Loading...
             </Text>
         </View>
     );
