@@ -126,7 +126,7 @@ export default function AboutMeScreen() {
         fetchLeetCodeStats();
     }, []);
 
-    const professionalSummary = `Passionate Full-Stack Developer with expertise in modern web and mobile technologies. Experienced in building scalable applications using React, React Native, and Node.js. Strong problem-solving skills with a focus on clean code and user experience. Proficient in cloud technologies and AI integration.`;
+    const professionalSummary = `Computer Science graduate from UPES with a strong foundation in Full-Stack AI Development. Passionate about building modern, user-focused web and mobile applications from the ground up. I stay constantly updated with emerging technologies, exploring new tools and frameworks to craft scalable, high-performance solutions. Driven by curiosity and problem-solving, I aim to engineer impactful digital experiences that blend performance, design, and innovation.`;
 
     const skills: SkillItem[] = [
         { name: 'Java', icon: Java, url: 'https://www.oracle.com/java/' },
@@ -164,8 +164,8 @@ export default function AboutMeScreen() {
             customIcon: (
                 <Image
                     source={require('@/icons/elevenlabs-logo-white.png')}
-                    style={{ width: 150, height: 150 }}
-                    resizeMode="contain"
+                    style={{ width: 100, height: 100 }}
+                    resizeMode="center"
                 />
             )
         },
@@ -210,7 +210,7 @@ export default function AboutMeScreen() {
     const socialLinks = [
         {
             name: 'LinkedIn',
-            url: 'https://www.linkedin.com/in/harshitsh0711/',
+            url: 'https://www.linkedin.com/in/dab07/',
             icon: LinkedIn,
         },
         {

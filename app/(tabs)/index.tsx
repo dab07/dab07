@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, Pressable, Dimensions } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Pressable, Dimensions, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, {
@@ -15,14 +15,24 @@ import { Code, Briefcase, Award, MessageSquare, GraduationCap, Mail } from 'luci
 import BlackHoleEffect from '@/components/BlackHoleEffect';
 import CosmicParticles from '@/components/CosmicParticles';
 
-const { width, height } = Dimensions.get('window');
-
 export default function IndexScreen() {
     const router = useRouter();
     const scrollY = useSharedValue(0);
     const pulseScale = useSharedValue(1);
-    
-    const isMobile = width < 768;
+    const [screenData, setScreenData] = useState(Dimensions.get('window'));
+
+    useEffect(() => {
+        const onChange = (result: { window: any }) => {
+            setScreenData(result.window);
+        };
+
+        const subscription = Dimensions.addEventListener('change', onChange);
+        return () => subscription?.remove();
+    }, []);
+
+    // More reliable platform detection
+    const isWeb = Platform.OS === 'web';
+    const isMobile = !isWeb && screenData.width < 768;
 
     const scrollHandler = useAnimatedScrollHandler({
         onScroll: (event) => {
@@ -59,8 +69,8 @@ export default function IndexScreen() {
         router.push(`/(tabs)/${route}` as any);
     };
 
-    if (!isMobile) {
-        // Desktop version - keep the BlackHole effect
+    if (isWeb || screenData.width >= 768) {
+        // Web/Desktop version - keep the BlackHole effect
         return (
             <View className="flex-1">
                 <BlackHoleEffect />
@@ -72,7 +82,7 @@ export default function IndexScreen() {
     return (
         <View className="flex-1 bg-black">
             <CosmicParticles particleCount={30} />
-            
+
             {/* Stars Background */}
             <View className="absolute inset-0">
                 {[...Array(60)].map((_, i) => (
@@ -120,7 +130,7 @@ export default function IndexScreen() {
                             <Text className="text-2xl font-bold text-white mb-6 text-center">
                                 Explore My Portfolio
                             </Text>
-                            
+
                             <View className="flex-row flex-wrap justify-center gap-4">
                                 {navigationItems.map((item, index) => {
                                     const IconComponent = item.icon;
@@ -153,12 +163,12 @@ export default function IndexScreen() {
                                 colors={['rgba(15, 15, 35, 0.95)', 'rgba(5, 5, 15, 0.98)']}
                                 className="absolute inset-0 rounded-2xl"
                             />
-                            
+
                             <View className="relative z-10">
                                 <Text className="text-xl font-bold text-white mb-4 text-center">
                                     Quick Overview
                                 </Text>
-                                
+
                                 <View className="flex-row justify-around">
                                     <View className="items-center">
                                         <Text className="text-2xl font-bold text-purple-400">3+</Text>

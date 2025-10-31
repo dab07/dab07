@@ -129,7 +129,7 @@ export default function IntershipScreen() {
                             return (
                                 <View key={groupIndex} className="relative mb-12">
                                     {/* Timeline dot at company level */}
-                                    <View className="absolute left-1/2 top-8 w-4 h-4 rounded-full bg-gradient-to-r from-pink-500 to-blue-500 border-4 border-[#050510] -ml-2 shadow-[0_0_15px_#8B5CF6] z-20" />
+                                    <View className="absolute left-1/2 top-8 w-4 h-4 rounded-full bg-gradient-to-r from-pink-500 to-blue-500 border-4 border-[#050510] -ml-2 shadow-[0_0_15px_#FFFFFF] z-20" />
                                     
                                     {/* Single bordered container per company */}
                                     <View
@@ -178,7 +178,7 @@ export default function IntershipScreen() {
                         })}
                     </View>
                 </Animated.ScrollView>
-            <Text className='text-center text-4xl text-yellow-200 p-4 mt-8'>Start</Text>    
+            {/* <Text className='text-center text-4xl text-yellow-200 p-4 mt-8'>Start</Text>     */}
             </SafeAreaView>
         </View>
         </AnimatedScreenWrapper>
